@@ -1,8 +1,7 @@
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext('2d');
-var width = canvas.width;
-var height = canvas.height;
 
+g_canvasMap = mapCanvas();
 /////////////////////////////
 // Canvas Stuff
 /////////////////////////////
@@ -20,7 +19,6 @@ function  getMousePos(canvas, evt) {
 // canvas mousemove handler
 canvas.onmousemove = function(e) {
 	var position = getMousePos(canvas, e);
-	console.log(position);
 	drawAt("rgba(255, 0, 0, 1.0)", position.x, position.y);
 }
 
@@ -33,3 +31,37 @@ function drawAt(rgba, x, y) {
 /////////////////////////////
 // Fractal Stuff
 /////////////////////////////
+// f(z) = z^2 - 0.221 - 0.713i
+function julia() {
+	
+
+}
+
+// map the canvas to complex numbers
+// the top left is (-1, 1) and the bottom right is (1, -1)
+function mapCanvas() {
+	var canvasMap = [];
+
+	var xStep = 2 / (canvas.width - 1); 
+	var yStep = 2 / (canvas.height - 1);
+	var real, imaginary;
+	for(var y = 0; y < canvas.height; y++) {
+		canvasMap[y] = [];
+
+		// set imaginary component for this row
+		// should be in [-1, 1]
+		imaginary = math.round(1 - (yStep * y), 5);
+		for(var x = 0; x < canvas.width; x++) {
+			// set real component for this column
+			// should be in [-1, 1]
+			real = math.round(-1 + (xStep * x), 5);
+			canvasMap[y][x] = {
+				real: real,
+				imaginary: imaginary
+			}
+		}
+	}
+
+	console.log("done");
+	return canvasMap;
+}
