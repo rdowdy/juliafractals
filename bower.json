@@ -1,0 +1,17 @@
+{
+  "name": "juliaset",
+  "main": "index.js",
+  "homepage": "https://github.com/rdowdy/juliafractals",
+  "authors": [
+    "Ryan Dowdy <rdowdy21@gmail.com>"
+  ],
+  "description": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
