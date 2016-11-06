@@ -1,7 +1,10 @@
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext('2d');
 
-g_canvasMap = mapCanvas();
+// f(z) = z^2 - 0.221 - 0.713i
+var fn = math.complex({re: -0.221, im: -0.713});
+
+julia(canvas);
 /////////////////////////////
 // Canvas Stuff
 /////////////////////////////
@@ -17,10 +20,10 @@ function  getMousePos(canvas, evt) {
 }
 
 // canvas mousemove handler
-canvas.onmousemove = function(e) {
-	var position = getMousePos(canvas, e);
-	drawAt("rgba(255, 0, 0, 1.0)", position.x, position.y);
-}
+// canvas.onmousemove = function(e) {
+// 	var position = getMousePos(canvas, e);
+// 	drawAt("rgba(255, 0, 0, 1.0)", position.x, position.y);
+// }
 
 // draws a single rgba pixel at (x, y)
 function drawAt(rgba, x, y) {
@@ -31,37 +34,34 @@ function drawAt(rgba, x, y) {
 /////////////////////////////
 // Fractal Stuff
 /////////////////////////////
-// f(z) = z^2 - 0.221 - 0.713i
-function julia() {
-	
-
-}
-
-// map the canvas to complex numbers
-// the top left is (-1, 1) and the bottom right is (1, -1)
-function mapCanvas() {
-	var canvasMap = [];
-
+function julia(canvas) {
 	var xStep = 2 / (canvas.width - 1); 
 	var yStep = 2 / (canvas.height - 1);
 	var real, imaginary;
-	for(var y = 0; y < canvas.height; y++) {
-		canvasMap[y] = [];
 
+	for(var y = 0; y < canvas.height; y++) {
 		// set imaginary component for this row
 		// should be in [-1, 1]
 		imaginary = math.round(1 - (yStep * y), 5);
+
 		for(var x = 0; x < canvas.width; x++) {
 			// set real component for this column
 			// should be in [-1, 1]
 			real = math.round(-1 + (xStep * x), 5);
-			canvasMap[y][x] = {
-				real: real,
-				imaginary: imaginary
+			var z = math.complex({re: real, im: imaginary});
+
+			var cutoff = 256;
+			var count = 0;
+			while(count < cutoff && math.abs(z) < 2) {
+				z = calcFn(z);
+				count++;
 			}
+
+			drawAt("rgba(" + count + ",0,0,1.0)", x, y);
 		}
 	}
-
-	console.log("done");
-	return canvasMap;
+}
+function calcFn(z) {
+	var zSquared = math.square(z);
+	return math.add(zSquared, fn);
 }
