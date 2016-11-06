@@ -19,12 +19,6 @@ function  getMousePos(canvas, evt) {
   }
 }
 
-// canvas mousemove handler
-// canvas.onmousemove = function(e) {
-// 	var position = getMousePos(canvas, e);
-// 	drawAt("rgba(255, 0, 0, 1.0)", position.x, position.y);
-// }
-
 // draws a single rgba pixel at (x, y)
 function drawAt(rgba, x, y) {
 	context.fillStyle = rgba;
@@ -39,25 +33,28 @@ function julia(canvas) {
 	var yStep = 2 / (canvas.height - 1);
 	var real, imaginary;
 
+	var cutoff = 256;
+	var z, count;
+
 	for(var y = 0; y < canvas.height; y++) {
-		// set imaginary component for this row
-		// should be in [-1, 1]
-		imaginary = math.round(1 - (yStep * y), 5);
+		// set imaginary component for this row; should be in [-1, 1]
+		imaginary = 1 - (yStep * y);
 
 		for(var x = 0; x < canvas.width; x++) {
-			// set real component for this column
-			// should be in [-1, 1]
-			real = math.round(-1 + (xStep * x), 5);
-			var z = math.complex({re: real, im: imaginary});
+			// set real component for this column; should be in [-1, 1]
+			real = -1 + (xStep * x);
+			z = math.complex({re: real, im: imaginary});
 
-			var cutoff = 256;
-			var count = 0;
+			cutoff = 256;
+			count = 0;
 			while(count < cutoff && math.abs(z) < 2) {
 				z = calcFn(z);
 				count++;
 			}
 
-			drawAt("rgba(" + count + ",0,0,1.0)", x, y);
+			if(count > 0) {
+				drawAt("rgba(" + count + ",0,0,1.0)", x, y);
+			}
 		}
 	}
 }
